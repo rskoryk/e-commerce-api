@@ -13,6 +13,7 @@ public class CategoryMapper {
 
     public static CategoryResponse mapCategoryToCategoryDto(Category category){
         return CategoryResponse.builder()
+                .id(category.getId())
                 .name(category.getName())
                 .build();
     }

@@ -22,5 +22,6 @@ public class OrderItem {
     private BigDecimal price;
     private BigDecimal total;
     @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 }

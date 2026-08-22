@@ -16,7 +16,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/post")
+    @PostMapping
     public ResponseEntity<ReviewResponse> post(@Valid @RequestBody ReviewRequest request){
         return ResponseEntity.ok(reviewService.post(request));
     }
