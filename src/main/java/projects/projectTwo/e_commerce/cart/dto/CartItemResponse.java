@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Builder
 @Data
 public class CartItemResponse {
+    private Long id;
     private String name;
     private int quantity;
     private BigDecimal price;
