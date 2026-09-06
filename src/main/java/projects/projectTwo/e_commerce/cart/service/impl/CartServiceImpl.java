@@ -1,5 +1,6 @@
 package projects.projectTwo.e_commerce.cart.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,7 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void addItem(AddCartItemRequest request) {
         User user = getCurrentUser();
@@ -87,6 +89,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Transactional
     @Override
     public void removeItem(Long cartItemId) {
         User user = getCurrentUser();
@@ -107,6 +110,7 @@ public class CartServiceImpl implements CartService {
         return CartMapper.mapCartToCartResponse(cart);
     }
 
+    @Transactional
     @Override
     public void updateItem(Long cartItemId, UpdateCartItemRequest request) {
         User user = getCurrentUser();
