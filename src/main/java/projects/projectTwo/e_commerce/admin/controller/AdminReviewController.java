@@ -23,4 +23,10 @@ public class AdminReviewController {
         adminReviewService.deactivateReview(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<Void> activateReview(@PathVariable Long id){
+        adminReviewService.activateReview(id);
+        return ResponseEntity.ok().build();
+    }
 }

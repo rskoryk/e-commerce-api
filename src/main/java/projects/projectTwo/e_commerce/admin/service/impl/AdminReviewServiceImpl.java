@@ -30,4 +30,11 @@ public class AdminReviewServiceImpl implements AdminReviewService {
         review.setActive(false);
         reviewRepository.save(review);
     }
+
+    @Override
+    public void activateReview(Long id) {
+        Review review = findReviewById(id);
+        review.setActive(true);
+        reviewRepository.save(review);
+    }
 }
