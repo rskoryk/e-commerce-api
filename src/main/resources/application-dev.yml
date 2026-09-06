@@ -1,4 +1,20 @@
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
 spring:
+  mail:
+    host: smtp.mailtrap.io
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    from: noreply@ecommerce.com
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     url: jdbc:h2:mem:ecommerce_db
     driver-class-name: org.h2.Driver

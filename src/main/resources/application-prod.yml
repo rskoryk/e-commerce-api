@@ -1,9 +1,25 @@
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
 spring:
+  mail:
+    host: smtp.mailtrap.io
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    from: noreply@ecommerce.com
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecommerce_db
+    url: ${SPRING_DATASOURCE_URL}
     driver-class-name: org.postgresql.Driver
-    username: root
-    password: 1234
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
