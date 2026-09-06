@@ -1,9 +1,7 @@
 package projects.projectTwo.e_commerce.order.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import projects.projectTwo.e_commerce.user.entity.User;
 import projects.projectTwo.e_commerce.order.enums.OrderStatus;
 
@@ -13,8 +11,9 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "orders")
 public class Order {
     @Id

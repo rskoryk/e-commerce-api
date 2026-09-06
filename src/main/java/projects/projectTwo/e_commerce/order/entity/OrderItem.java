@@ -1,15 +1,16 @@
 package projects.projectTwo.e_commerce.order.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import projects.projectTwo.e_commerce.product.entity.Product;
 
 import java.math.BigDecimal;
 
 @Entity
 @Builder
-@Getter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "orderItems")
 public class OrderItem {
     @Id

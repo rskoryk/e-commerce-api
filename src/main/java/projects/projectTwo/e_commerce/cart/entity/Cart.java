@@ -1,9 +1,7 @@
 package projects.projectTwo.e_commerce.cart.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import projects.projectTwo.e_commerce.user.entity.User;
 
 import java.math.BigDecimal;
@@ -12,15 +10,18 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter
-@Setter
-@Table(name = "carts")
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
+@Table(name = "carts", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "user")
+})
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;

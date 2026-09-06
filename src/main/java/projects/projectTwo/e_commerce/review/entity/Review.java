@@ -1,9 +1,7 @@
 package projects.projectTwo.e_commerce.review.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import projects.projectTwo.e_commerce.product.entity.Product;
 import projects.projectTwo.e_commerce.user.entity.User;
 
@@ -11,8 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "reviews")
 public class Review {
     @Id

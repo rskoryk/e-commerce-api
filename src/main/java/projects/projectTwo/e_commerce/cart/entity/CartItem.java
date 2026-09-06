@@ -1,17 +1,16 @@
 package projects.projectTwo.e_commerce.cart.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import projects.projectTwo.e_commerce.product.entity.Product;
 
 import java.math.BigDecimal;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "cart_items")
 public class CartItem {
     @Id
