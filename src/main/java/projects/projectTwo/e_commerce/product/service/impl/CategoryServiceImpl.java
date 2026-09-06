@@ -1,15 +1,17 @@
 package projects.projectTwo.e_commerce.product.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import projects.projectTwo.e_commerce.common.exceptions.CustomIllegalStateException;
 import projects.projectTwo.e_commerce.common.exceptions.ResourceAlreadyExistsException;
 import projects.projectTwo.e_commerce.common.exceptions.ResourceNotFoundException;
 import projects.projectTwo.e_commerce.product.dto.CategoryRequest;
 import projects.projectTwo.e_commerce.product.dto.CategoryResponse;
 import projects.projectTwo.e_commerce.product.entity.Category;
-import projects.projectTwo.e_commerce.product.entity.Product;
 import projects.projectTwo.e_commerce.product.mapper.CategoryMapper;
 import projects.projectTwo.e_commerce.product.repository.CategoryRepository;
+import projects.projectTwo.e_commerce.product.repository.ProductRepository;
 import projects.projectTwo.e_commerce.product.service.CategoryService;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public CategoryResponse getById(Long id) {
@@ -28,10 +31,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse getCategoryByName(String name) {
-        Category category = categoryRepository.findByName(name)
+    public List<CategoryResponse> getCategoriesByName(String name) {
+        List<Category> category = categoryRepository.findAllByNameContainingIgnoreCase(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-        return CategoryMapper.mapCategoryToCategoryDto(category);
+        return category.stream().map(CategoryMapper::mapCategoryToCategoryDto).toList();
     }
 
     @Override
@@ -45,6 +48,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
+        if (productRepository.existsByCategory(category)) throw new CustomIllegalStateException("Cannot delete category that still has products assigned to it");
+
         categoryRepository.delete(category);
 
         return "Category removed successfully!";
@@ -54,9 +59,13 @@ public class CategoryServiceImpl implements CategoryService {
     public String add(CategoryRequest request) {
         if (categoryRepository.existsByName(request.getName())) throw new ResourceAlreadyExistsException("Category already exists");
 
-        Category category = CategoryMapper.mapCategoryDtoToCategory(request);
+        Category category = CategoryMapper.mapCategoryRequestToCategory(request);
 
-        categoryRepository.save(category);
+        try {
+            categoryRepository.save(category);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceAlreadyExistsException("Category already exists");
+        }
 
         return "Category added successfully!";
     }

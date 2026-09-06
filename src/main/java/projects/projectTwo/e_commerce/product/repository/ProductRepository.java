@@ -9,6 +9,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
     boolean existsByNameAndIdNot(String name, Long id);
-    List<Product> findAllByName(String name);
+    boolean existsByCategory(Category category);
+    List<Product> findAllByNameContainingIgnoreCase(String name);
     List<Product> findAllByCategory(Category category);
 }
