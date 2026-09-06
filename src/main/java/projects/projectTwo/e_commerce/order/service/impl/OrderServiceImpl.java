@@ -1,5 +1,6 @@
 package projects.projectTwo.e_commerce.order.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import projects.projectTwo.e_commerce.cart.entity.CartItem;
 import projects.projectTwo.e_commerce.cart.repository.CartRepository;
 import projects.projectTwo.e_commerce.common.exceptions.CustomAccessDeniedException;
 import projects.projectTwo.e_commerce.common.exceptions.CustomIllegalStateException;
+import projects.projectTwo.e_commerce.common.exceptions.InsufficientStockException;
 import projects.projectTwo.e_commerce.common.exceptions.ResourceNotFoundException;
 import projects.projectTwo.e_commerce.order.dto.OrderResponse;
 import projects.projectTwo.e_commerce.order.entity.Order;
@@ -52,12 +54,20 @@ public class OrderServiceImpl implements OrderService {
                 ));
     }
 
+    @Transactional
     @Override
     public OrderResponse checkout() {
         User user = getCurrentUser();
         Cart cart = getOrCreateCart(user);
         List<CartItem> cartItems = cart.getItems();
         if (cartItems.isEmpty()) throw new CustomIllegalStateException("Cart is empty");
+
+        for (CartItem cartItem : cartItems){
+            if (cartItem.getQuantity() > cartItem.getProduct().getStock()) {
+                throw new InsufficientStockException("Insufficient stock");
+            }
+        }
+
         Order order = Order.builder()
                 .status(OrderStatus.CREATED)
                 .totalAmount(cart.getTotalAmount())
@@ -74,6 +84,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.mapOrderToOrderResponse(savedOrder);
     }
 
+    @Transactional
     @Override
     public void cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
