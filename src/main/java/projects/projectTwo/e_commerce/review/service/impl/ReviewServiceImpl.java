@@ -17,6 +17,8 @@ import projects.projectTwo.e_commerce.review.service.ReviewService;
 import projects.projectTwo.e_commerce.user.entity.User;
 import projects.projectTwo.e_commerce.user.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
@@ -61,6 +63,15 @@ public class ReviewServiceImpl implements ReviewService {
         review.setRating(updateRequest.getRating());
         reviewRepository.save(review);
         return ReviewMapper.mapReviewToReviewResponse(review);
+    }
+
+    @Override
+    public List<ReviewResponse> getReviewsByProductId(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ResourceNotFoundException(String.format("Product with id='%d' not found", productId));
+        }
+        List<Review> reviews = reviewRepository.findAllByProductIdAndActiveTrue(productId);
+        return reviews.stream().map(ReviewMapper::mapReviewToReviewResponse).toList();
     }
 
     @Override
