@@ -21,7 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .withUsername(username)
                         .password(user.getPassword())
                         .roles(user.getRole().name())
-                        .disabled(!user.isEnabled())
+                        .disabled(!user.isEmailVerified())
+                        .accountLocked(user.isBlocked())
                         .build()).orElseThrow(() -> new UsernameNotFoundException(String.format("User with username = \"%s\" not found", username)));
     }
 }
