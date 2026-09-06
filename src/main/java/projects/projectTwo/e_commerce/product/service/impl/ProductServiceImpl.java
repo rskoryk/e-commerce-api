@@ -1,14 +1,15 @@
 package projects.projectTwo.e_commerce.product.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import projects.projectTwo.e_commerce.common.exceptions.ResourceAlreadyExistsException;
 import projects.projectTwo.e_commerce.common.exceptions.ResourceNotFoundException;
 import projects.projectTwo.e_commerce.product.dto.ProductRequest;
 import projects.projectTwo.e_commerce.product.dto.ProductResponse;
+import projects.projectTwo.e_commerce.product.dto.ProductUpdateRequest;
 import projects.projectTwo.e_commerce.product.entity.Category;
 import projects.projectTwo.e_commerce.product.entity.Product;
-import projects.projectTwo.e_commerce.product.mapper.CategoryMapper;
 import projects.projectTwo.e_commerce.product.mapper.ProductMapper;
 import projects.projectTwo.e_commerce.product.repository.CategoryRepository;
 import projects.projectTwo.e_commerce.product.repository.ProductRepository;
@@ -34,27 +35,40 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.existsByName(request.getName())) {
             throw new ResourceAlreadyExistsException(String.format("Product with name='%s' already exists", request.getName()));
         }
-        Product product = ProductMapper.mapProductRequestToProduct(request);
 
-        productRepository.save(product);
+        Category category = categoryRepository.findByName(request.getCategory().getName())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        Product product = ProductMapper.mapProductRequestToProduct(request, category);
+
+        try {
+            productRepository.save(product);
+        } catch (DataIntegrityViolationException e){
+            throw new ResourceAlreadyExistsException("Product already exists");
+        }
 
         return "Product successfully added!";
     }
 
     @Override
-    public ProductResponse updateById(Long id, ProductRequest request) {
+    public ProductResponse updateById(Long id, ProductUpdateRequest request) {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(String.format("Product with name='%d' not found", id))
         );
-
-        if (productRepository.existsByNameAndIdNot(request.getName(), id)) {
-            throw new ResourceAlreadyExistsException(String.format("Product with name='%s' already exists", request.getName()));
+        if (request.getName() != null) {
+            if (productRepository.existsByNameAndIdNot(request.getName(), id)) {
+                throw new ResourceAlreadyExistsException(String.format("Product with name='%s' already exists", request.getName()));
+            }
+            product.setName(request.getName());
         }
-
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        product.setCategory(CategoryMapper.mapCategoryDtoToCategory(request.getCategory()));
+        if (request.getCategory() != null) {
+            Category category = categoryRepository.findByName(request.getCategory().getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+            product.setCategory(category);
+        }
+        if (request.getDescription() != null) product.setDescription(request.getDescription());
+        if (request.getPrice() != null) product.setPrice(request.getPrice());
+        if (request.getStock() != null) product.setStock(request.getStock());
 
         Product saved = productRepository.save(product);
 
@@ -63,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> getProductsByName(String name) {
-        List<Product> products = productRepository.findAllByName(name);
+        List<Product> products = productRepository.findAllByNameContainingIgnoreCase(name);
         return products.stream().map(ProductMapper::mapProductToProductResponse).toList();
     }
 

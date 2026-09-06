@@ -2,6 +2,7 @@ package projects.projectTwo.e_commerce.auth.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,16 +39,22 @@ public class AuthServiceImpl implements AuthService {
 
         String verificationToken = UUID.randomUUID().toString();
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER);
-        user.setEnabled(false);
-        user.setVerificationToken(verificationToken);
-        user.setVerificationTokenExpiration(LocalDateTime.now().plusHours(24));
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .emailVerified(false)
+                .blocked(false)
+                .verificationToken(verificationToken)
+                .verificationTokenExpiration(LocalDateTime.now().plusHours(24))
+                .build();
 
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e){
+            throw new ResourceAlreadyExistsException("User already exists");
+        }
 
         emailService.sendVerificationEmail(request.getEmail(), verificationToken);
 
@@ -78,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (user.getVerificationTokenExpiration().isBefore(LocalDateTime.now())) throw new TokenExpiredException("Verification token expired");
 
-        user.setEnabled(true);
+        user.setEmailVerified(true);
         user.setVerificationToken(null);
         user.setVerificationTokenExpiration(null);
 

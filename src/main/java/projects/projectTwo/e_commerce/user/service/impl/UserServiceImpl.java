@@ -1,6 +1,7 @@
 package projects.projectTwo.e_commerce.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,11 @@ public class UserServiceImpl implements UserService {
         }
         if (newPassword != null) user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e){
+            throw new ResourceAlreadyExistsException("User with that username/email already exists");
+        }
 
         return UserMapper.mapUserToUserResponse(user);
     }
