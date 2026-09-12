@@ -3,7 +3,6 @@ package projects.projectTwo.e_commerce.cart.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import projects.projectTwo.e_commerce.cart.dto.AddCartItemRequest;
 import projects.projectTwo.e_commerce.cart.dto.CartResponse;
