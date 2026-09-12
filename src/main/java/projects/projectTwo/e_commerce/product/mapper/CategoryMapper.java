@@ -5,9 +5,9 @@ import projects.projectTwo.e_commerce.product.dto.CategoryResponse;
 import projects.projectTwo.e_commerce.product.entity.Category;
 
 public class CategoryMapper {
-    public static Category mapCategoryDtoToCategory(CategoryRequest dto){
+    public static Category mapCategoryRequestToCategory(CategoryRequest request){
         return Category.builder()
-                .name(dto.getName())
+                .name(request.getName())
                 .build();
     }
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projects.projectTwo.e_commerce.product.dto.ProductRequest;
 import projects.projectTwo.e_commerce.product.dto.ProductResponse;
+import projects.projectTwo.e_commerce.product.dto.ProductUpdateRequest;
 import projects.projectTwo.e_commerce.product.service.ProductService;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request){
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductUpdateRequest request){
         ProductResponse product = productService.updateById(id, request);
         return ResponseEntity.ok(product);
     }

@@ -1,9 +1,11 @@
 package projects.projectTwo.e_commerce.review.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ReviewRequest {
     @NotBlank
     @Size(min = 10, max = 2000)
