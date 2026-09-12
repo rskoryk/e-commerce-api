@@ -25,14 +25,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void blockUser(Long id) {
         User user = findUserById(id);
-        user.setEnabled(false);
+        user.setBlocked(true);
         userRepository.save(user);
     }
 
     @Override
     public void unblockUser(Long id) {
         User user = findUserById(id);
-        user.setEnabled(true);
+        user.setBlocked(false);
         userRepository.save(user);
     }
 
