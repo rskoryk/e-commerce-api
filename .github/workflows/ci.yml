@@ -15,4 +15,8 @@ jobs:
           java-version: 21
       - run: chmod +x mvnw
       - run: ./mvnw test
+        env:
+          JWT_SECRET: c2NyZWVuZXhhbXBsZWZpbmlzaGNvcHBlcnN0ZWVsbmluZXNoYWxsb3draWxscGVhY2U=
+          MAIL_USERNAME: test
+          MAIL_PASSWORD: test
 
