@@ -1,5 +1,7 @@
 # E-commerce API
 
+[![CI](https://github.com/rskoryk/e-commerce-api/actions/workflows/ci.yml/badge.svg)](https://github.com/rskoryk/e-commerce-api/actions/workflows/ci.yml)
+
 A RESTful API for an e-commerce application with JWT authentication, email verification, product catalog, shopping cart, order checkout, product reviews, and role-based access control.
 
 ## Tech Stack
@@ -28,7 +30,8 @@ A RESTful API for an e-commerce application with JWT authentication, email verif
 
 ### Prerequisites
 
-- Docker + Docker Compose
+- Docker + Docker Compose (to run the app)
+- Java 21 (to run tests)
 
 ### Run with Docker
 
@@ -128,8 +131,23 @@ A RESTful API for an e-commerce application with JWT authentication, email verif
 | DELETE | /api/admin/reviews/{id} | Permanently delete a review |
 
 ## Running Tests
+
+Requires Java 21. Set test values for the environment variables in the terminal (any Base64 string of at least 32 bytes for `JWT_SECRET`; the mail values can be anything), then run the tests.
+
+**PowerShell (Windows):**
+```powershell
+$env:JWT_SECRET="c2NyZWVuZXhhbXBsZWZpbmlzaGNvcHBlcnN0ZWVsbmluZXNoYWxsb3draWxscGVhY2U="
+$env:MAIL_USERNAME="test"
+$env:MAIL_PASSWORD="test"
+./mvnw test
+```
+
+**bash (Linux / macOS):**
 ```bash
-  ./mvnw test
+export JWT_SECRET=c2NyZWVuZXhhbXBsZWZpbmlzaGNvcHBlcnN0ZWVsbmluZXNoYWxsb3draWxscGVhY2U=
+export MAIL_USERNAME=test
+export MAIL_PASSWORD=test
+./mvnw test
 ```
 
 ## Environment Variables
