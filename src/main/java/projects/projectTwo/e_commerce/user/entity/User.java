@@ -29,8 +29,9 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-
+    @Builder.Default
     private boolean emailVerified = false;
+    @Builder.Default
     private boolean blocked = false;
     private String verificationToken;
     private LocalDateTime verificationTokenExpiration;
