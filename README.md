@@ -54,10 +54,7 @@ A RESTful API for an e-commerce application with JWT authentication, email verif
 ```bash
    docker-compose up --build
 ```
-5. Open Swagger UI:
-```bash
-   http://localhost:8080/swagger-ui/index.html
-```
+5. Open Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ## API Endpoints
 
